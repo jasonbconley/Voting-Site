@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<body>
+    <title>Scheduling Application</title>
+    <p>This is an application that shows the times that users have chosen for their event.</p>
+
+    <form action="/data" method = "POST">
+        <input type="checkbox" id="date1" name="date1" value="1">
+        <label for="date1">Date 1</label><br>
+        <input type="checkbox" id="vehicle2" name="date2" value="1">
+        <label for="time2">Date 2</label><br>
+        <input type="checkbox" id="vehicle3" name="date3" value="1">
+        <label for="time3">Date 3</label><br>
+        <p><input type = "submit" value = "submit" /></p>
+    </form>
+
+    <figure>
+        <img src="{{ url_for('get_graph') }}" />
+        <figcaption>Current date slots and their count</figcaption>
+    </figure>
+
+    <p>If you have made an error, you can revoke any choices here.</p>
+    <form action="/remove" method = "POST">
+        <input type="checkbox" id="date1" name="date1" value="1">
+        <label for="date1">Date 1</label><br>
+        <input type="checkbox" id="vehicle2" name="date2" value="1">
+        <label for="time2">Date 2</label><br>
+        <input type="checkbox" id="vehicle3" name="date3" value="1">
+        <label for="time3">Date 3</label><br>
+        <p><input type = "submit" value = "submit" /></p>
+    </form>
+
+
+</body>

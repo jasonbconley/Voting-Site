@@ -1,0 +1,5 @@
+{
+    "files.associations": {
+        "\"python.pythonPath\"": "\"flask_env\\Scripts\\python.exe\""
+    }
+}
