@@ -1,8 +1,8 @@
 from flask import Flask, redirect, render_template, request
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from io import BytesIO
-from flask import Response
-from data_connection import insert_data, display_data, show_graph, delete_data
+from flask import Response, make_response, session
+from alch_conn import increment_data, fetch_data, show_graph, decrement_data
 
 app = Flask(__name__)
 
@@ -12,24 +12,28 @@ def hello_world():
 
 @app.route("/data/", methods=["POST"])
 def update_data():
-    if request.form.get('date1') == '1':
-        insert_data(0)
-    if request.form.get('date2') == '1':
-        insert_data(1)
-    if request.form.get('date3') == '1':
-        insert_data(2)
-    
-    return redirect("/")
+    past_choices = get_past(request.cookies)
+    choices = form_data(request.form, eval(past_choices))
+    increment_data(choices)
+
+    resp = make_response(redirect("/"))
+    s = session()
+    if s.setSession():
+        for val in choices:
+            resp.set_cookie(str(val), 'true')
+    return resp
 
 @app.route("/remove/", methods=["POST"])
 def remove_data():
-    if request.form.get('date1') == '1':
-        delete_data(0)
-    if request.form.get('date2') == '1':
-        delete_data(1)
-    if request.form.get('date3') == '1':
-        delete_data(2)
-    
+    past_choices = get_past(request.cookies)
+    choices = form_data(request.form, eval(past_choices))
+    decrement_data(choices)
+
+    resp = make_response(redirect("/"))
+    s = session()
+    if s.setSession():
+        for val in choices:
+            resp.set_cookie(str(val), 'false')
     return redirect("/")
 
 @app.route("/graph" )
@@ -41,4 +45,29 @@ def get_graph():
 
 @app.route("/current")
 def show_data():
-    return display_data()
+    return fetch_data()
+
+# Helper function to translate form data into list
+def form_data(form_dict, past_choices):
+    choices = []
+    if form_dict.get('date1') == '1':
+        choices.append(0)
+    if form_dict.get('date2') == '1':
+        choices.append(1)
+    if form_dict.get('date3') == '1':
+        choices.append(2)
+    return choices
+
+def set_true(choices):
+    past = {0: False, 1: False, 2: False}
+    for val in choices:
+        past[val] = True
+    return str(past)
+
+def set_false(choices):
+    past = {0: True, 1: True, 2: True}
+    for val in choices:
+        past[val] = False
+    return str(past)
+
+def get_past(cookie_dict):
