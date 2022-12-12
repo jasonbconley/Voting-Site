@@ -13,7 +13,7 @@ def hello_world():
 @app.route("/data/", methods=["POST"])
 def update_data():
     past_choices = get_past(request.cookies)
-    choices = form_data(request.form, eval(past_choices))
+    choices = form_data(request.form.to_dict(), eval(past_choices))
     increment_data(choices)
 
     resp = make_response(redirect("/"))
@@ -26,7 +26,7 @@ def update_data():
 @app.route("/remove/", methods=["POST"])
 def remove_data():
     past_choices = get_past(request.cookies)
-    choices = form_data(request.form, eval(past_choices))
+    choices = form_data(request.form.to_dict(), eval(past_choices))
     decrement_data(choices)
 
     resp = make_response(redirect("/"))
@@ -47,14 +47,14 @@ def get_graph():
 def show_data():
     return fetch_data()
 
-# Helper function to translate form data into list
+# Helper function to translate form data into list if the choice is not in the past choices
 def form_data(form_dict, past_choices):
     choices = []
-    if form_dict.get('date1') == '1':
+    if form_dict.get('date1') == '1' and 'date1' not in past_choices:
         choices.append(0)
-    if form_dict.get('date2') == '1':
+    if form_dict.get('date2') == '1' and 'date2' not in past_choices:
         choices.append(1)
-    if form_dict.get('date3') == '1':
+    if form_dict.get('date3') == '1' and 'date3' not in past_choices:
         choices.append(2)
     return choices
 
@@ -71,3 +71,10 @@ def set_false(choices):
     return str(past)
 
 def get_past(cookie_dict):
+    past = []
+    if 'date1' in cookie_dict.keys():
+        past.append('date1')
+    if 'date2' in cookie_dict.keys():
+        past.append('date2')
+    if 'date3' in cookie_dict.keys():
+        past.append('date3')

@@ -4,7 +4,7 @@
     <title>Scheduling Application</title>
     <p>This is an application that shows the times that users have chosen for their event.</p>
 
-    <form action="/data" method = "POST">
+    <form action="/data/" method = "POST" name="times">
         <input type="checkbox" id="date1" name="date1" value="1">
         <label for="date1">Date 1</label><br>
         <input type="checkbox" id="date2" name="date2" value="1">
@@ -20,7 +20,7 @@
     </figure>
 
     <p>If you have made an error, you can revoke any choices here.</p>
-    <form action="/remove" method = "POST">
+    <form action="/remove/" method = "POST" name="removals">
         <input type="checkbox" id="date1" name="date1" value="1">
         <label for="date1">Date 1</label><br>
         <input type="checkbox" id="date2" name="date2" value="1">
