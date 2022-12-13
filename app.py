@@ -13,14 +13,14 @@ def hello_world():
 @app.route("/data/", methods=["POST"])
 def update_data():
     past_choices = get_past(request.cookies)
-    choices = form_data(request.form.to_dict(), eval(past_choices))
+    if past_choices == None:
+        past_choices = []
+    choices = form_data(request.form.to_dict(), past_choices)
     increment_data(choices)
 
     resp = make_response(redirect("/"))
-    s = session()
-    if s.setSession():
-        for val in choices:
-            resp.set_cookie(str(val), 'true')
+    for val in choices:
+        resp.set_cookie(str(val), 'true')
     return resp
 
 @app.route("/remove/", methods=["POST"])
@@ -30,11 +30,9 @@ def remove_data():
     decrement_data(choices)
 
     resp = make_response(redirect("/"))
-    s = session()
-    if s.setSession():
-        for val in choices:
-            resp.set_cookie(str(val), 'false')
-    return redirect("/")
+    for val in choices:
+        resp.set_cookie(str(val), 'true')
+    return resp
 
 @app.route("/graph" )
 def get_graph():
